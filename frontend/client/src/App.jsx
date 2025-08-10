@@ -3,6 +3,7 @@ import Navbar from './components/Navbar/Navbar'
 import Home from './pages/Home/Home';
 import Footer from './components/Footer/Footer';
 import SpaceDetails from './pages/SpaceDetails/SpaceDetails';
+import SearchPage from './components/Search/SearchPage';
 
 const App = () => {
 
@@ -15,7 +16,8 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home/>}/>
           <Route path='/rooms/:id' element={<SpaceDetails/>}/>
-
+          <Route path="/search" element={<SearchPage />} />
+          
         </Routes>
 
       </div>
@@ -25,4 +27,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;
