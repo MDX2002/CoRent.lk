@@ -1,6 +1,6 @@
 import React from 'react'
 import Title from '../Title/Title'
-import { testimonials } from 'e:/assets/assets'
+import { testimonials } from '../../assets/assets'
 import StarRating from '../StarRating/StarRating'
 
 const Testimonoal = () => {
@@ -33,4 +33,4 @@ const Testimonoal = () => {
   )
 }
 
-export default Testimonoal
+export default Testimonoal;
