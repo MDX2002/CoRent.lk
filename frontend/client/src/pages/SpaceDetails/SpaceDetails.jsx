@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { place_Dummy_list, assets } from '../../assets/assets'
+import { place_Dummy_list, userDummyData, assets } from '../../assets/assets'
 import StarRating from '../../components/StarRating/StarRating'
 
 const SpaceDetails = () => {
@@ -46,33 +46,37 @@ const SpaceDetails = () => {
       </div>
 
       {/* Room Highlights*/}
-      <div>
-        <div className=''><p>Description</p></div>
-        <div>
+      <div className='bg-[#F6F9FC] text-gray-500/80 pt-8 px-6 md:px-16 lg:px-24 xl:px-32 mt-5'>
+        <div className='mb-4'><p className='text-xl font-semibold'>Details</p></div>
+        <div className="flex flex-col md:flex-row justify-between w-full gap-10 border-gray-500/30 pb-6">
 
-          <div>
-
-            <img src='' alt="" />
-            <p></p>
-            <img src="" alt="" />
-            <p>{}</p>
+          <div className="flex flex-col text-lg">
+        
+            <p className='mb-2'>Location: {space.location}</p>
+            
+            <p>Type: {space.type}</p>
 
           </div>
         
-          <div>
+          <div className="flex flex-col text-lg">
 
-            <img src="" alt="" />
-            <p></p>
-            <img src="" alt="" />
-            <p></p>
-
-          </div>
-
-          <div>
-            <p></p>
+            
+            <p className='mb-2'>Owner: {userDummyData.username}</p>
+            
+            <p>Contact no: {userDummyData.contactno}</p>
 
           </div>
 
+          <div className="flex flex-col text-lg">
+            <p>Rs:1000/month</p>
+
+          </div>
+
+        </div>
+
+        <div>
+          <p className='text-lg mb-2'>Description:</p>
+          <p className='text-lg'>Home is more than just a place—it's a feeling of comfort, safety, and belonging. It’s where we create memories with loved ones, unwind after a long day, and express ourselves freely. Whether big or small, cozy or spacious, home is the heart of our lives, filled with warmth and familiarity. It’s the one place in the world that truly feels like our own.</p>
         </div>
         
 
