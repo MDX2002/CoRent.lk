@@ -21,13 +21,15 @@ import linkedin_icon from './linkendinIcon.svg'
 import facebook_icon from './facebookIcon.svg'
 import twitter_icon from './twitterIcon.svg'
 import cross_icon from './cross_icon.png'
-import add_icon from './add_icon.png'
+import add_icon from './addIcon.svg'
 import order_icon from './order_icon.png'
 import rating_starts from './rating_starts.png'
 import starIconFilled from './starIconFilled.svg'
 import starIconOutlined from './starIconOutlined.svg'
-import upload_area from './upload_area.png'
+import upload_area from './uploadArea.svg'
 import location_icon from './locationIcon.svg'
+import dashboard_icon from './dashboardIcon.svg'
+import list_icon from './listIcon.svg'
 
 export const assets = {
 
@@ -48,7 +50,9 @@ export const assets = {
   upload_area,
   menuIcon,
   calender_icon,
-  location_icon
+  location_icon,
+  dashboard_icon,
+  list_icon
 
 }
 
@@ -73,6 +77,7 @@ export const userDummyData = {
   "email": "user.kivindu@gmail.com",
   "image": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
   "role": "Owner",
+  "contactno": "0769185629",
   "createdAt": "2025-03-25T09:29:16.367Z",
   "updatedAt": "2025-04-10T06:34:48.719Z",
   "__v": 1,
