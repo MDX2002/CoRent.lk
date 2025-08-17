@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { place_Dummy_list, userDummyData, assets } from '../../assets/assets'
 import StarRating from '../../components/StarRating/StarRating'
+import axios from 'axios'
 
 const SpaceDetails = () => {
   const {id} = useParams()
@@ -9,16 +10,26 @@ const SpaceDetails = () => {
   const [mainImage, setMainImage] = useState(null)
 
   useEffect(()=>{
-    const space = place_Dummy_list.find(space=> space._id === id)
-    space && setSpace(space)
-    space && setMainImage(space.images[0])
-  },[])
+    const fetchSpace = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_LISTING_URL}/api/listings/${id}`)
+        setSpace(res.data)
+        setMainImage(JSON.parse(res.data.images)[0])
+      } catch (err) {
+        console.error('Error fetching listing details:', err)
+      }
+    }
+
+    fetchSpace()
+  },[id])
+
+  if (!space) return <div>Loading...</div>
 
   return space && (
     <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
       {/* Space Details */}
       <div className='flex flex-col md:flex-row items-start md:items-center gap-2'>
-        <h1 className='text-3xl md-text-4xl font-playfair'>{space.name} <span className='font-inter text-sm'>({space.type})</span></h1>      
+        <h1 className='text-3xl md-text-4xl font-playfair'>{space.title} <span className='font-inter text-sm'>({space.listing_type})</span></h1>      
       </div>
 
       {/* Space Rating */}
@@ -38,7 +49,7 @@ const SpaceDetails = () => {
           <img src={mainImage} alt="Room Image"  className='w-full rounded-xl shadow-lg object-cover'/>
         </div>
         <div className='grid grid-cols-2 gap-4 lg:w-1/2 w-full'>
-          {space?.images.length > 1 && space.images.map((image, index)=>(
+          {space?.images.length > 1 && JSON.parse(space.images).map((image, index)=>(
             <img onClick={()=> setMainImage(image)} 
             key={index} src={image} alt="Room Image" className={`w-full rounded-xl shadow-md object-cover cursor-pointer ${mainImage === image && 'outline outline-3 outline-orange-500'}`}/>
           ))}
@@ -54,21 +65,21 @@ const SpaceDetails = () => {
         
             <p className='mb-2'>Location: {space.location}</p>
             
-            <p>Type: {space.type}</p>
+            <p>Type: {space.listing_type}</p>
 
           </div>
         
           <div className="flex flex-col text-lg">
 
             
-            <p className='mb-2'>Owner: {userDummyData.username}</p>
+            <p className='mb-2'>Owner: {space.owner?.name || 'Unknown'}</p>
             
-            <p>Contact no: {userDummyData.contactno}</p>
+            <p>Contact no: {space.owner?.contact_number || '-'}</p>
 
           </div>
 
           <div className="flex flex-col text-lg">
-            <p>Rs:1000/month</p>
+            <p>Rs:{space.price}/month</p>
 
           </div>
 
@@ -76,7 +87,7 @@ const SpaceDetails = () => {
 
         <div>
           <p className='text-lg mb-2'>Description:</p>
-          <p className='text-lg'>Home is more than just a place—it's a feeling of comfort, safety, and belonging. It’s where we create memories with loved ones, unwind after a long day, and express ourselves freely. Whether big or small, cozy or spacious, home is the heart of our lives, filled with warmth and familiarity. It’s the one place in the world that truly feels like our own.</p>
+          <p className='text-lg'>{space.description}</p>
         </div>
         
 

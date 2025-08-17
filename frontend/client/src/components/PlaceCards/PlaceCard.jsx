@@ -4,12 +4,12 @@ import { assets } from '../../assets/assets'
 
 const PlaceCard = ({place, index}) => {
   return (
-    <Link to={'/rooms/' + place._id} onClick={()=> scrollTo(0,0)} key={place._id} className='relative max-w-70 w-full rounded-xl overflow-hidden bg-white text-gray-500/90 shadow-[0px_4px_4px_rgba(0,0,0,0.05)]'>
-      <img src={place.images[0]} alt="" />
+    <Link to={'/rooms/' + place.id} onClick={()=> scrollTo(0,0)} key={place.id} className='relative max-w-70 w-full rounded-xl overflow-hidden bg-white text-gray-500/90 shadow-[0px_4px_4px_rgba(0,0,0,0.05)]'>
+      <img src={JSON.parse(place.images)[0]} alt="" />
 
       <div className='p-4 pt-5'>
         <div className='flex items-center justify-start'>
-          <p className='font-playfair text-xl font-medium text-gray-800 break-words max-w-[70%] mr-5'>{place.name}</p>
+          <p className='font-playfair text-xl font-medium text-gray-800 break-words max-w-[70%] mr-5'>{place.title}</p>
           <div className='flex items-center gap-1'>
             <img src={assets.starIconFilled} alt="star-icon" /> 4.5
           </div>
