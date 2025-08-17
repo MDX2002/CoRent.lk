@@ -1,0 +1,38 @@
+
+services:
+  db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: KivinduM123!
+      MYSQL_DATABASE: room_booking
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pKivinduM123!"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  listing-service:
+    build:
+      context: ./listing-service
+      dockerfile: Dockerfile
+    container_name: listing-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./listing-service/.env
+    volumes:
+      - ./listing-service/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db_data:
