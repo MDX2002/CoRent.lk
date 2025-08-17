@@ -102,7 +102,7 @@ const getListings = async (req, res) => {
     // Attach owner info
     const listingsWithOwner = await Promise.all(results.map(async (listing) => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/auth/user/${listing.owner_id}`);
+        const response = await axios.get(`${process.env.AUTH_SERVICE_URL}/api/auth/user/${listing.owner_id}`);
         listing.owner = response.data;
       } catch (e) {
         listing.owner = { name: 'Unknown', contact_number: '' };
@@ -147,7 +147,7 @@ const getListingById = (req, res) => {
 
     try {
       // Optional: attach owner info
-      const response = await axios.get(`http://localhost:4000/api/auth/user/${listing.owner_id}`);
+      const response = await axios.get(`${process.env.AUTH_SERVICE_URL}/api/auth/user/${listing.owner_id}`);
       listing.owner = response.data;
     } catch (e) {
       listing.owner = { name: 'Unknown', contact_number: '' };
