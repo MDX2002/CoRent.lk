@@ -215,7 +215,7 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
           />
         </div>
 
-        <p className="mt-4 text-sm">
+        <div className="mt-4 text-sm">
           {state === 'register' ? (
             <>
               Already have an account?{' '}
@@ -246,7 +246,7 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
               </div>
             </>
           )}
-        </p>
+        </div>
 
         <button
           type="submit"

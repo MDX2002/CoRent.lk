@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { assets } from "../../assets/assets.js";
 import { Link, useLocation } from 'react-router-dom';
 import Modal from '../Login/Login.jsx';
+import { useNavigate } from "react-router-dom";
 
 
 const Navbar = () => {
+
+    const navigate = useNavigate();
+
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'Browse Listings', path: '/rooms' },
@@ -53,7 +57,7 @@ const Navbar = () => {
                         <div className={`${isScrolled ? "bg-gray-700" : "bg-white"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
                     </a>
                 ))}
-                <button className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`}>
+                <button className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`} onClick={() => navigate("/owner")}>
                     Dashboard
                 </button>
             </div>
