@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext.jsx';  // import context
 
-const UserLogin = ({ onClose, onLoginSuccess }) => {
+const UserLogin = ({ onClose }) => {
   const [state, setState] = useState('login'); // 'login' or 'register'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [contact, setContact] = useState('');
+
+  const { login } = useContext(AuthContext);   // get login function from context
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -18,59 +21,9 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
     };
   }, []);
 
-  {/*
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      let res;
-      if (state === 'login') {
-        // Login POST request
-        res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
-          email,
-          password,
-        });
-
-        // Save JWT token to localStorage
-        localStorage.setItem('token', res.data.token);
-
-        onLoginSuccess(); // Notify Navbar to update
-        alert(res.data.message);
-        onClose(); // Close modal
-
-      } else if (state === 'register') {
-        // Register POST request
-        res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/register`, {
-          name,
-          email,
-          contact_number: contact,
-          password,
-        });
-
-        console.log('Registration response:', res.data);
-        alert(res.data.message); // e.g., "Check your email to verify."
-        setState('login'); // Switch to login after registration
-      }
-    } catch (err) {
-      console.error('Error response:', err.response);
-      alert(err.response?.data?.message || 'Server error');
-    }
-  };
-  
-  */}
-
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    console.log('Form submitted');
-    console.log('Current state:', state);
-    console.log('Form values:', { name, email, password, contact });
-
     const backendURL = import.meta.env.VITE_BACKEND_URL;
-
-    console.log('Backend URL:', backendURL);
 
     if (!backendURL) {
       alert('Backend URL is undefined. Check your .env file and restart the dev server.');
@@ -79,63 +32,39 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
 
     try {
       let res;
+
       if (state === 'login') {
-        console.log('Sending login request...');
         res = await axios.post(`${backendURL}/api/auth/login`, { email, password });
 
-        
-        // --- EMAIL VERIFICATION CHECK ---
+        // Email verification check
         if (res.data.user && res.data.user.is_verified === 0) {
           alert('Please verify your email before logging in.');
-          return; // Stop login
+          return;
         }
 
-        // Store JWT token
-        localStorage.setItem('token', res.data.token);
-        onLoginSuccess(); // Update Navbar / auth state
+        // Save login via context (updates localStorage and global state)
+        login(res.data.token, res.data.user);
 
-
+        alert(res.data.message);
+        onClose();
 
       } else if (state === 'register') {
-        console.log('Sending register request...');
         res = await axios.post(`${backendURL}/api/auth/register`, {
           name,
           email,
           contact_number: contact,
           password,
         });
+
+        alert(res.data.message); // e.g., "Check your email to verify"
+        setState('login'); // switch to login after registration
       }
 
-      console.log('Response from server:', res);
-      if (state === 'login') {
-        localStorage.setItem('token', res.data.token);
-        onLoginSuccess();
-      }
-
-      alert(res.data.message);
-      if (state === 'login') onClose();
-      if (state === 'register') setState('login');
     } catch (err) {
       console.error('Axios error:', err);
-
-      if (err.response) {
-        console.error('Error response data:', err.response.data);
-        console.error('Error response status:', err.response.status);
-        console.error('Error response headers:', err.response.headers);
-        alert(err.response.data.message || 'Server returned an error');
-      } else if (err.request) {
-        console.error('No response received. Request:', err.request);
-        alert('No response from server. Check backend is running.');
-      } else {
-        console.error('Error setting up request:', err.message);
-        alert('Request setup error: ' + err.message);
-      }
+      alert(err.response?.data?.message || 'Server error');
     }
   };
-
-
-
-
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40">
@@ -152,8 +81,7 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
         </button>
 
         <p className="text-2xl font-medium text-center mb-4">
-          <span className="text-indigo-500">User</span>{' '}
-          {state === 'login' ? 'Login' : 'Sign Up'}
+          <span className="text-indigo-500">User</span> {state === 'login' ? 'Login' : 'Sign Up'}
         </p>
 
         {state === 'register' && (
@@ -215,7 +143,7 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
           />
         </div>
 
-        <div className="mt-4 text-sm">
+        <p className="mt-4 text-sm">
           {state === 'register' ? (
             <>
               Already have an account?{' '}
@@ -246,7 +174,7 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
               </div>
             </>
           )}
-        </div>
+        </p>
 
         <button
           type="submit"
