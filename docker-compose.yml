@@ -1,4 +1,4 @@
-
+version: "3.9"
 services:
   db:
     image: mysql:8
@@ -11,8 +11,19 @@ services:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d # <-- Add this line
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pKivinduM123!"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-pKivinduM123!",
+        ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,6 +40,36 @@ services:
       - ./listing-service/.env
     volumes:
       - ./listing-service/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  auth-service: # <-- Add this new service
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./auth-service/.env # Assuming you have a separate .env for this service
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+    
+
+  search-service:
+    build:
+      context: ./search-service
+      dockerfile: Dockerfile
+    container_name: search-service
+    ports:
+      - "7000:6000"
+    env_file:
+      - ./search-service/.env
     depends_on:
       db:
         condition: service_healthy

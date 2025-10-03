@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const UserLogin = ({ onClose, onLoginSuccess }) => {
   const [state, setState] = useState('login'); // 'login' or 'register'
@@ -7,6 +8,8 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [contact, setContact] = useState('');
+
+  const navigate = useNavigate(); //create navigate hook
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -83,7 +86,7 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
         console.log('Sending login request...');
         res = await axios.post(`${backendURL}/api/auth/login`, { email, password });
 
-        
+
         // --- EMAIL VERIFICATION CHECK ---
         if (res.data.user && res.data.user.is_verified === 0) {
           alert('Please verify your email before logging in.');
@@ -94,6 +97,9 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
         localStorage.setItem('token', res.data.token);
         onLoginSuccess(); // Update Navbar / auth state
 
+        /////////////////////////////////////////////////////
+        alert(res.data.message);
+        onClose(); // Close modal
 
 
       } else if (state === 'register') {
@@ -104,17 +110,28 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
           contact_number: contact,
           password,
         });
-      }
 
+        /////////////////////////////////////////
+        alert(res.data.message); // Check your email to verify
+        setState('login');       // Switch to login after registration
+
+      }
+      ////////////////////////////////////////////
+      {/*}
       console.log('Response from server:', res);
       if (state === 'login') {
         localStorage.setItem('token', res.data.token);
         onLoginSuccess();
       }
+      */}
 
-      alert(res.data.message);
-      if (state === 'login') onClose();
-      if (state === 'register') setState('login');
+
+      ////////////////////////////////////////////////////////////
+      //alert(res.data.message);
+      //if (state === 'login') onClose();
+      //if (state === 'register') setState('login');
+
+
     } catch (err) {
       console.error('Axios error:', err);
 
@@ -238,12 +255,23 @@ const UserLogin = ({ onClose, onLoginSuccess }) => {
                 </span>
               </div>
 
+              {/*}
               <div className="mt-1">
                 Forgot password?{' '}
                 <span className="text-indigo-500 cursor-pointer hover:underline">
                   Click here
                 </span>
               </div>
+              */}
+
+              <div className="mt-1">
+                Forgot password?{" "}
+                <a href="/forgot-password" className="text-indigo-500 hover:underline">
+                  Click here
+                </a>
+              </div>
+
+
             </>
           )}
         </div>
