@@ -7,4 +7,8 @@ router.post('/login', authController.login);
 router.get('/verify/:token', authController.verifyEmail);
 router.get('/user/:id', authController.getUserById);
 
+// --- New routes ---
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password/:token', authController.resetPassword);
+
 module.exports = router;

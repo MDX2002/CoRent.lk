@@ -20,7 +20,11 @@ const Navbar = () => {
     const location = useLocation();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    //const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(() => {
+        return !!localStorage.getItem('token'); // true if token exists
+    });
+
 
 
     useEffect(() => {
@@ -65,7 +69,7 @@ const Navbar = () => {
             {/* Desktop Right */}
             <div className="hidden md:flex items-center gap-4">
                 <img src={assets.search_icon} alt="search" className={`${isScrolled && 'invert'} h-7 transition-all duration-500`} />
-                
+
                 {/*
                 <button
                     onClick={() => setShowModal(true)} // open modal here
@@ -75,26 +79,48 @@ const Navbar = () => {
                 </button>
                 */}
 
-                {isLoggedIn ? (
-                
-                <button
-                    onClick={async () => {
-                    await fetch("/auth/logout", { method: "POST", credentials: "include" });
-                    setIsLoggedIn(false);
-                    }}
-                    className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-blue-950" : "bg-blue-950 text-white"}`}
-                >
-                    Logout
-                </button>
+                {/*{isLoggedIn ? (
+
+                    <button
+                        onClick={async () => {
+                            await fetch("/auth/logout", { method: "POST", credentials: "include" });
+                            setIsLoggedIn(false);
+                        }}
+                        className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-blue-950" : "bg-blue-950 text-white"}`}
+                    >
+                        Logout
+                    </button>
                 ) : (
-                <button
-                    onClick={() => setShowModal(true)}
-                    className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
-                >
-                    Login
-                </button>
-                
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+                    >
+                        Login
+                    </button>
+
                 )}
+                */}
+
+                {isLoggedIn ? (
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('token'); // clear JWT
+                            setIsLoggedIn(false);             // update Navbar state
+                            navigate('/');                    // optional: redirect to home
+                        }}
+                        className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-blue-950" : "bg-blue-950 text-white"}`}
+                    >
+                        Logout
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+                    >
+                        Login
+                    </button>
+                )}
+
 
 
 
@@ -122,14 +148,40 @@ const Navbar = () => {
                     Dashboard
                 </button>
 
+                {/*
                 <button onClick={() => setShowModal(true)} className="bg-black text-white px-8 py-2.5 rounded-full transition-all">
                     Login
                 </button>
+                */}
+
+
+                {isLoggedIn ? (
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('token'); // clear JWT
+                            setIsLoggedIn(false);             // update Navbar state
+                            setIsMenuOpen(false);             // close mobile menu
+                            navigate('/');                    // optional redirect
+                        }}
+                        className="bg-blue-950 text-white px-8 py-2.5 rounded-full transition-all"
+                    >
+                        Logout
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-black text-white px-8 py-2.5 rounded-full transition-all"
+                    >
+                        Login
+                    </button>
+                )}
+
+
             </div>
-            
+
             {showModal && (
-                <Modal 
-                    onClose={() => setShowModal(false)} 
+                <Modal
+                    onClose={() => setShowModal(false)}
                     onLoginSuccess={() => setIsLoggedIn(true)}
                 />
             )}
