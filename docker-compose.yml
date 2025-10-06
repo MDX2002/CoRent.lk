@@ -19,15 +19,15 @@ services:
           "mysqladmin",
           "ping",
           "-h",
-          "localhost",
+          "127.0.0.1",
           "-u",
           "root",
           "-pKivinduM123!",
         ]
-      interval: 5s
+      interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 10s
+      retries: 10
+      start_period: 30s
 
   listing-service:
     build:
@@ -43,6 +43,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
+  
+  email-service:
+    build:
+      context: ./email-service
+      dockerfile: Dockerfile
+    container_name: email-service
+    ports:
+      - "6060:6060"   
+    env_file:
+      - ./email-service/.env
+    depends_on:
+      listing-service:
+        condition: service_started
     restart: unless-stopped
 
   auth-service: # <-- Add this new service

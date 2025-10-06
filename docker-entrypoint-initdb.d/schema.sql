@@ -24,7 +24,7 @@ CREATE TABLE users (
 );
 
 
-{/*CREATE TABLE users (
+/*{/*CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -36,7 +36,7 @@ CREATE TABLE users (
     -- Recommended: Tracks when the verification link should expire
     verification_expires_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);*/}
+);*/}*/
 
 
 -- Create listings table
