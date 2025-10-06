@@ -9,6 +9,12 @@ const SpaceDetails = () => {
   const [space, setSpace] = useState(null)
   const [mainImage, setMainImage] = useState(null)
 
+  const [formData, setFormData] = useState({
+    ownerEmail: '',
+    name: '',
+    message: ''
+  })
+
   useEffect(()=>{
     const fetchSpace = async () => {
       try {
@@ -22,6 +28,30 @@ const SpaceDetails = () => {
 
     fetchSpace()
   },[id])
+
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.name]: e.target.value})
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_EMAIL_URL}/api/contact/send-message`, {
+          name: formData.name,
+          email: formData.ownerEmail,
+          message: formData.message,
+          listingTitle: space.title,
+          listingId: space.id
+        })
+        if (res.data.success) {
+          alert('Email sent successfully!')
+          setFormData({ ownerEmail: '', name: '', message: '' })
+        }
+      } catch (err) {
+        console.error(err)
+        alert('Failed to send email.')
+      }
+  }
 
   if (!space) return <div>Loading...</div>
 
@@ -74,7 +104,8 @@ const SpaceDetails = () => {
             
             <p className='mb-2'>Owner: {space.owner?.name || 'Unknown'}</p>
             
-            <p>Contact no: {space.owner?.contact_number || '-'}</p>
+            <p className='mb-2'>Contact no: {space.owner?.contact_number || '-'}</p>
+            <p>Email: {space.owner?.email || '-'}</p>
 
           </div>
 
@@ -92,6 +123,57 @@ const SpaceDetails = () => {
         
 
       </div>
+      
+      {/* Contact Form */}
+      <div className='pt-8 px-6 md:px-16 lg:px-24 xl:px-32 mt-5'>
+        <form onSubmit={handleSubmit}>
+
+              <h2 className="text-2xl font-bold py-4 text-center">
+            Contact Owner
+          </h2>
+
+          <label className="font-medium w-full">Owner Email Address</label>
+          <input
+            type="email"
+            name="ownerEmail"
+            value={formData.ownerEmail}
+            onChange={handleChange}
+            placeholder="Enter Owner Email here"
+            required
+            className="mt-2 mb-4 h-10 px-3 w-full border border-slate-300 rounded-full outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          />
+
+          <label className="font-medium w-full">Your Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Enter your name here"
+            required
+            className="mt-2 mb-4 h-10 px-3 w-full border border-slate-300 rounded-full outline-none focus:ring-2 focus:ring-indigo-400 transition"
+          />
+
+          <label className="font-medium w-full">Message</label>
+          <textarea
+            name="message"
+            rows="4"
+            value={formData.message}
+            onChange={handleChange}
+            placeholder="Enter your message here"
+            required
+            className="mt-2 mb-4 p-2 w-full border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-400 transition resize-none"
+          />
+
+          <button
+            type="submit"
+            className="mt-5 bg-indigo-500 hover:bg-indigo-600 text-white py-2.5 w-30 rounded-full transition disabled:opacity-50"
+          >Send</button>
+
+        </form>
+      </div>
+
+
 
       
     </div>
