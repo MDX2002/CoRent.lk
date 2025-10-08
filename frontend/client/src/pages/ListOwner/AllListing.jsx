@@ -68,7 +68,7 @@ const AllListing = () => {
             />
               <p>{item.title}</p>
               <p>{item.listing_type}</p>
-              <p>${item.price}</p>
+              <p>Rs{item.price}</p>
               <p className='cursor-pointer text-red-600' onClick={() => handleDelete(item.id)}>X</p>
 
             </div>
