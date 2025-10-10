@@ -24,20 +24,6 @@ CREATE TABLE users (
 );
 
 
-/*{/*CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    contact_number VARCHAR(15),
-    password_hash VARCHAR(255) NOT NULL,
-    is_verified TINYINT(1) DEFAULT 0,
-    -- New column: Stores a unique value (nonce) included in the JWT for one-time use
-    verification_nonce VARCHAR(255) NULL,
-    -- Recommended: Tracks when the verification link should expire
-    verification_expires_at DATETIME NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);*/}*/
-
 
 -- Create listings table
 CREATE TABLE IF NOT EXISTS listings (

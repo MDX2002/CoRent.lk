@@ -13,8 +13,10 @@ const Hero = () => {
         <span className="block mt-10 font-playfair font-bold md:font-extrabold">Find your</span>
         <span className="block mt-6 font-playfair font-bold md:font-extrabold">perfect place</span>
       </h1>
+      <p className='bg-[#49b9ff]/50 px-3.5 py-1 rounded-full mt-5'>Find affordable rooms, book instantly, and live comfortably-your perfect shared space starts here!</p>
 
-       <form className='bg-white text-gray-500 rounded-lg px-6 py-4 mt-25 flex flex-col md:flex-row max-md:items-start gap-4 max-md:mx-auto'>
+
+       {/* <form className='bg-white text-gray-500 rounded-lg px-6 py-4 mt-25 flex flex-col md:flex-row max-md:items-start gap-4 max-md:mx-auto'>
 
             <div>
                 <div className='flex items-center gap-2'>
@@ -50,7 +52,7 @@ const Hero = () => {
                 <img src={assets.search_icon} alt="searchIcon" className='h-7'/>
                 <span>Search</span>
             </button>
-        </form>
+        </form> */}
 
     </div>
   </div>

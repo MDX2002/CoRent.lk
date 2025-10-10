@@ -1,5 +1,5 @@
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
@@ -8,10 +8,11 @@ app.use(express.json());
 
 // MySQL Connection
 const db = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",       // local machine
   user: "root",
-  password: "",
-  database: "bordimmanage"
+  password: "KivinduM123!", // match docker-compose password
+  database: "room_booking", // match docker-compose database
+  port: 3307   
 });
 
 db.connect((err) => {
