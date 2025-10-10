@@ -11,7 +11,7 @@ export default function SearchPage() {
   const [sortBy, setSortBy] = useState('ascending');
 
   // Only use search service URL
-  const searchURL = import.meta.env.VITE_BACKEND_SEARCH_URL || 'http://localhost:7000';
+  const searchURL = import.meta.env.VITE_BACKEND_SEARCH_URL || 'http://localhost:17000';
 
   const fetchListings = async () => {
     try {

@@ -1,17 +1,20 @@
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ---------------------
 // MySQL Connection
+// ---------------------
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "bordimmanage"
+  host: "127.0.0.1",       // local machine
+  user: "root",            // match docker-compose
+  password: "KivinduM123!",// match docker-compose
+  database: "room_booking",// match docker-compose
+  port: 3307               // host-mapped port from Docker
 });
 
 db.connect((err) => {
@@ -19,67 +22,45 @@ db.connect((err) => {
     console.error("Database connection failed:", err);
     return;
   }
-  console.log("Connected to MySQL ✅");
+  console.log("Connected to Docker MySQL ✅");
 });
 
-/* --------- Places API --------- */
-// Get places with optional search + filter
-app.get("/places", (req, res) => {
-  const { search = "", type = "" } = req.query;
-  let sql = "SELECT id, name, type, location, price FROM places WHERE 1=1";
-  const params = [];
+// ---------------------
+// Listings API (limited fields)
+// ---------------------
 
-  if (search) {
-    sql += " AND (name LIKE ? OR type LIKE ? OR location LIKE ? OR price LIKE ?)";
-    const searchTerm = `%${search}%`;
-    params.push(searchTerm, searchTerm, searchTerm, searchTerm);
-  }
-
-  if (type) {
-    sql += " AND type = ?";
-    params.push(type);
-  }
-
-  db.query(sql, params, (err, result) => {
+// Get all listings
+app.get("/listings", (req, res) => {
+  const sql = "SELECT owner_id AS ownerID, listing_type AS listingType, location, price FROM listings";
+  db.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(result);
+    res.json(results);
   });
 });
 
-// Delete place
-app.delete("/places/:id", (req, res) => {
+// Delete a listing
+app.delete("/listings/:id", (req, res) => {
   const { id } = req.params;
-  db.query("DELETE FROM places WHERE id = ?", [id], (err, result) => {
+  db.query("DELETE FROM listings WHERE id = ?", [id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: "Place deleted successfully" });
+    res.json({ message: "Listing deleted successfully" });
   });
 });
 
-/* --------- Users API --------- */
-// Get users with optional search + filter
+// ---------------------
+// Users API (limited fields)
+// ---------------------
+
+// Get all users
 app.get("/users", (req, res) => {
-  const { search = "", type = "" } = req.query;
-  let sql = "SELECT id, name, Email, UserName, Type FROM users WHERE 1=1";
-  const params = [];
-
-  if (search) {
-    sql += " AND (name LIKE ? OR Type LIKE ? OR Email LIKE ? OR UserName LIKE ?)";
-    const searchTerm = `%${search}%`;
-    params.push(searchTerm, searchTerm, searchTerm, searchTerm);
-  }
-
-  if (type) {
-    sql += " AND Type = ?";
-    params.push(type);
-  }
-
-  db.query(sql, params, (err, result) => {
+  const sql = "SELECT name, email, contact_number AS contactNo, created_at AS createdAt FROM users";
+  db.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(result);
+    res.json(results);
   });
 });
 
-// Delete user
+// Delete a user
 app.delete("/users/:id", (req, res) => {
   const { id } = req.params;
   db.query("DELETE FROM users WHERE id = ?", [id], (err, result) => {
@@ -88,9 +69,12 @@ app.delete("/users/:id", (req, res) => {
   });
 });
 
-/* --------- Customer Reviews API --------- */
-// Add review
-app.post("/add", (req, res) => {
+// ---------------------
+// Ratings API (Customer Reviews)
+// ---------------------
+
+// Add a review
+app.post("/ratings", (req, res) => {
   const { name, note, stars } = req.body;
   if (!name || stars === undefined) {
     return res.status(400).json({ error: "Name and stars are required" });
@@ -105,13 +89,13 @@ app.post("/add", (req, res) => {
 
 // Get all reviews
 app.get("/ratings", (req, res) => {
-  db.query("SELECT id, name, note, stars, created_at  FROM ratings ORDER BY created_at DESC", (err, result) => {
+  db.query("SELECT id, name, note, stars, created_at FROM ratings ORDER BY created_at DESC", (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(result);
+    res.json(results);
   });
 });
 
-// Delete review
+// Delete a review
 app.delete("/ratings/:id", (req, res) => {
   const { id } = req.params;
   db.query("DELETE FROM ratings WHERE id = ?", [id], (err, result) => {
@@ -120,7 +104,9 @@ app.delete("/ratings/:id", (req, res) => {
   });
 });
 
-/* --------- Start Server --------- */
+// ---------------------
+// Start Server
+// ---------------------
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT} 🚀`);
