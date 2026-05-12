@@ -1,70 +1,241 @@
-# Getting Started with Create React App
+# 🏠 CoRent.lk
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack rental property marketplace built with a microservices architecture.  
+Users can search for places, register, log in, verify emails, and manage listings.  
+The platform separates authentication, business logic, and frontend into independent services.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## ✨ Features
 
-### `npm start`
+- **User Authentication** – Registration, login, and email verification using JWT
+- **Places Search** – Dynamic search with keyword, type, location, and price filters
+- **Listings** – Browse and sort rental listings
+- **Microservices** – Isolated services for auth, posts, and email delivery
+- **Responsive Frontend** – React app with React Router and Axios
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧱 Tech Stack
 
-### `npm test`
+| Layer | Technology |
+|------|------|
+| Frontend | React (Vite), Axios, React Router |
+| Backend | Node.js, Express |
+| Database | MySQL |
+| Authentication | bcryptjs, JSON Web Tokens (JWT) |
+| Email | Nodemailer |
+| Containerisation | Docker, Docker Compose (optional) |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🏗️ Architecture
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```text
+├── auth-service        # Registration, login, email verification
+├── DBackendNew         # Main API for places, users, reviews
+├── email-service       # Sends verification emails
+├── frontend/client     # Main React application
+├── Dashboard           # Admin panel (React)
+└── Dfrontends          # Alternative public frontend
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Each service runs independently and communicates via REST APIs.  
+The frontend consumes the auth and backend APIs to provide a seamless user experience.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+# 🚀 Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Prerequisites
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Node.js (v18 or later)
+- MySQL (local or remote)
+- Docker (optional, for containerised deployment)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 1. Clone the Repository
 
-## Learn More
+```bash
+git clone https://github.com/MDX2002/CoRent.lk.git
+cd CoRent.lk
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 2. Environment Variables
 
-### Code Splitting
+Create `.env` files in the following services using the provided `.env.example` templates.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### `auth-service/.env`
 
-### Analyzing the Bundle Size
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=auth_db
+JWT_SECRET=your_jwt_secret
+EMAIL_SERVICE_URL=http://localhost:4000
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### `DBackendNew/.env`
 
-### Making a Progressive Web App
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=corent_db
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### `email-service/.env`
 
-### Advanced Configuration
+```env
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 3. Database Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Execute the SQL scripts found in:
 
-### `npm run build` fails to minify
+```text
+docker-entrypoint-initdb.d/
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Or create the schemas manually to initialise the tables.
+
+---
+
+## 4. Install Dependencies & Start Services
+
+### Auth Service
+
+```bash
+cd auth-service
+npm install
+npm start
+```
+
+### Main Backend (Places, Users)
+
+```bash
+cd DBackendNew
+npm install
+npm start
+```
+
+### Email Service
+
+```bash
+cd email-service
+npm install
+npm start
+```
+
+### Frontend
+
+```bash
+cd frontend/client
+npm install
+npm run dev
+```
+
+The frontend will run on:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## 5. Using Docker (Optional)
+
+Each service contains a `Dockerfile`.  
+You can build and run them individually or use Docker Compose if provided.
+
+---
+
+# 📡 API Endpoints
+
+## Auth Service (`/api/auth`)
+
+| Method | Endpoint | Description |
+|------|------|------|
+| POST | `/register` | Create a new user |
+| POST | `/login` | Authenticate user |
+| GET | `/verify/:token` | Verify email address |
+
+---
+
+## Main Backend (`/api`)
+
+| Method | Endpoint | Description |
+|------|------|------|
+| GET | `/places?search=...&type=...` | Search/filter places |
+| GET | `/users?search=...&type=...` | Search/filter users |
+
+Additional CRUD endpoints are available for places, reviews, and user management.
+
+---
+
+# 🧩 Frontend Pages
+
+- **Login/Signup Modal** – Toggles between registration and login
+- **Search Page** – Live search with sorting
+- **Landing Page** – Introduces the platform
+- **Place Details** – Individual listing views
+
+---
+
+# 👥 Team
+
+This project is a collaborative effort developed as part of a software-oriented computing course unit.
+
+### Team Members
+
+- Kivindu Rajamanukula
+- Malindu Dilmin
+- Gayathra
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the project
+2. Create your feature branch
+
+```bash
+git checkout -b feature/amazing-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add some amazing feature"
+```
+
+4. Push to the branch
+
+```bash
+git push origin feature/amazing-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 📄 License
+
+This project is currently not licensed.  
+All rights reserved by the author(s).
+
+If you intend to use or distribute this code, please contact the repository owner.
+
+---
+
+Built with by the CoRent.lk team

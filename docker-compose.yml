@@ -1,0 +1,93 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: KivinduM123!
+      MYSQL_DATABASE: room_booking
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d # <-- Add this line
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-u",
+          "root",
+          "-pKivinduM123!",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  listing-service:
+    build:
+      context: ./listing-service
+      dockerfile: Dockerfile
+    container_name: listing-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./listing-service/.env
+    volumes:
+      - ./listing-service/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  
+  email-service:
+    build:
+      context: ./email-service
+      dockerfile: Dockerfile
+    container_name: email-service
+    ports:
+      - "6060:6060"   
+    env_file:
+      - ./email-service/.env
+    depends_on:
+      listing-service:
+        condition: service_started
+    restart: unless-stopped
+
+  auth-service: # <-- Add this new service
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./auth-service/.env # Assuming you have a separate .env for this service
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+    
+
+  search-service:
+    build:
+      context: ./search-service
+      dockerfile: Dockerfile
+    container_name: search-service
+    ports:
+      - "7000:6000"
+    env_file:
+      - ./search-service/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db_data:
