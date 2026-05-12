@@ -196,9 +196,9 @@ This project is a collaborative effort developed as part of a software-oriented 
 
 ### Team Members
 
-- Member 1 Name
-- Member 2 Name
-- Member 3 Name
+- Kivindu Rajamanukula
+- Malindu Dilmin
+- Gayathra
 
 ---
 
